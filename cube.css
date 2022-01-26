@@ -1,0 +1,27 @@
+.dash-box
+{
+  width:200px;
+  height:200px!important;
+}
+
+.dash-box .dash-item
+{
+  max-width:100%!important;
+  max-height:100%!important;
+  width:calc( 100% - 10px );
+  height: calc( 100% - 10px );
+  justify-content: center;
+  background-color: hsla(0,0%,100%,.88);
+}
+
+.dash-box .dash-item .title
+{
+  font-size:24px;
+  font-family:"WenQuanYi Micro Hei","Microsoft YaHei";
+  font-weight:bold;
+}
+
+.dash-box .dash-item .value
+{
+  font-size:48px;
+}
