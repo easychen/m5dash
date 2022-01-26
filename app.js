@@ -1,15 +1,9 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-
-const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.post('/screen', async (req, res)=>{
+'use strict';
+const puppeteer = require('puppeteer');
+exports.main_handler = async (event, context) => {
+  const from_url =  '';
+  const to_url =  'dashboard.jpg';
   
-  const from_url =  'http://ftqq.com';
-  const to_url =  '';
-  
-  const puppeteer = require('puppeteer');
   const browser = await puppeteer.launch({args: ['--no-sandbox']});
   const page = await browser.newPage();
   const mobile = puppeteer.devices['iPhone X']
@@ -17,9 +11,9 @@ app.post('/screen', async (req, res)=>{
   await page.setViewport({ width: 200, height: 200 });
   
   await page.setDefaultNavigationTimeout(1000*60*5); 
-    await page.goto(from_url,{
-        waitUntil: 'networkidle2',
-    });
+  await page.goto(from_url,{
+      waitUntil: 'networkidle2',
+  });
   
   const data = await page.screenshot({"fullPage":true,"type":"jpeg","quality":90});
   // SECRETID 和 SECRETKEY请登录 https://console.cloud.tencent.com/cam/capi 进行查看和管理
@@ -30,29 +24,13 @@ app.post('/screen', async (req, res)=>{
   });
   cos.putObject({
     Bucket: '*', /* 必须 */
-    Region: 'ap-hongkong',    /* 必须 */
+    Region: '*',    /* 必须 */
     Key: to_url ,              /* 必须 */
     StorageClass: 'STANDARD',
     Body: data, // 上传文件对象
-    onProgress: function(progressData) {
-        console.log(JSON.stringify(progressData));
-    }
- }, async function(err, ret) {
-  res.set('Content-Type', 'application/json');
-  res.send(err || ret);
-  res.status(200).end();
-  await browser.close();
- });
-		
-});
-
-// Error handler
-app.use(function (err, req, res, next) {
-  console.error(err);
-  res.status(500).send('Internal Serverless Error');
-});
-
-// Web 类型云函数，只能监听 9000 端口
-app.listen(9000, () => {
-  console.log(`Server start on http://localhost:9000`);
-});
+  }, function(err, data) {
+    console.log(err || data);
+    return err || data;
+  });
+  return event
+};
